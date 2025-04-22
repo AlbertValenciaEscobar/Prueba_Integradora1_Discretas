@@ -11,8 +11,9 @@ public class Controller {
     private TablaHash<String, Object> tabla;
     private String lastAction;
     private String action;
-    private String [][] equipos;
+    private String[][] equipos;
     private String [][] clasificacion;
+    private int numTeams = 0;
 
     public Controller() {
         this.colaEquipos = new ColaPrioridad<>(Equipo.class);
@@ -20,8 +21,10 @@ public class Controller {
         this.tabla = new TablaHash<>();
         lastAction  = "";
         action = "";
-        equipos = new String[37][4];
-        clasificacion = new String[37][4];
+        equipos = new ChampionsLeagueEquipos().getEquiposData();
+        clasificacion = new String[37][5];
+        clasificacion[0][0]="Equipo";clasificacion[0][1]="Pais";
+        clasificacion[0][2]="Titulos";clasificacion[0][3]="Coeficiente FIFA";clasificacion[0][4]="puntuacion";
     }
 
     public void addEquipo(String name, String pais, int cantidadTitulos, double coeficienteUEFA) {
@@ -30,18 +33,6 @@ public class Controller {
         colaEquipos.insert(equipo);
         guardarReferencia();
         action  = name.replaceAll("\\s", "");
-    }
-
-    public String validarEquipo(String nombreEquipo) {
-        String exit = "No se ha encontrado el equipo";
-        for(int i = 1; i < equipos.length; i++){
-            if(equipos[i][0].equals(nombreEquipo)){
-                exit = "Se a registrado el equipo";
-                addEquipo(equipos[i][0], equipos[i][1], Integer.parseInt(equipos[i][2].toString()), Double.parseDouble(equipos[i][3]));
-                break;
-            }
-        }
-        return exit;
     }
 
     public void addPartido(String equipoLocal, String equipoVisitante, int golesVisitante, int golesLocal, String fecha) {
@@ -90,5 +81,36 @@ public class Controller {
     }
 
     public void guardarReferencia(){lastAction = action;}
+
+    // Logica del codigo
+
+    public String registrarEquipo(String nameTeam){
+        String exit = "No se pudo registrar";
+        for(int i = 1; i<equipos.length; i++){
+            if(equipos[i][0].equals(nameTeam)){
+                addEquipo(nameTeam, equipos[i][1], Integer.parseInt(equipos[i][2]),
+                        Double.parseDouble(equipos[i][3]));
+                numTeams++;
+                if(numTeams == 37){
+                    exit = "Ya todos los equipos posibles fueron registrados";
+                }else {
+                    equipos[i][0] = "";
+                    System.out.println("Se pudo registrar");
+                    break;
+                }
+            }
+        }
+        return exit;
+    }
+
+    public void precargar(){
+        for(int i = 1; i<equipos.length; i++){
+            if(!equipos[i][0].equalsIgnoreCase("") && numTeams<37){
+                addEquipo(equipos[i][0], equipos[i][1], Integer.parseInt(equipos[i][2]),
+                        Double.parseDouble(equipos[i][3]));
+                numTeams++;
+            }
+        }
+    }
 
 }

@@ -1,6 +1,6 @@
 package resources;
 
-public class Pila<B> {
+public class Pila<B> implements Interfase{
     Nodo<B> top;
     private int tamaño;
 
