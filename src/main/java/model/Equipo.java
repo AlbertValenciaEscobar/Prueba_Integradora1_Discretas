@@ -15,7 +15,7 @@ public class Equipo implements Comparable<Equipo>{
         this.puntuacion = 0;
     }
     //getters
-    public String getNombre() {return this.nombre;}
+    public String getName() {return this.nombre;}
     public String getPais() {return this.pais;}
     public int getCantidadTitulos() {return this.cantidadTitulos;}
     public double getCoeficienteUEFA() {return this.coeficienteUEFA;}

@@ -1,33 +1,53 @@
 package resources;
 
+import model.Equipo;
+import model.Partido;
+
 public class TablaHash<T, B> {
-    private Pila<B>[] table;
+    private B[] table;
     private int size;
 
     public TablaHash() {
-        table = (Pila<B>[]) new Object[97];
+        table = (B[]) new Object[97];
         size = 0;
-        for (int i = 0; i < table.length; i++) {
-            table[i] = new Pila<>();
-        }
     }
 
     public void insert(T llave, B valor){
         int posicion = indexTabla(llave);
-        table[posicion].insert(valor);
+        for(int i = 0; i< table.length; i++){
+            if(table[posicion] != null){
+                posicion++;
+                break;
+            }
+        }
+        table[posicion] = valor;
         size++;
     }
 
-    public B borrarUltimaAccion(T llave){
-        B exit = null;
+    public void borrarUltimaAccion(T llave){
         int posicion = indexTabla(llave);
-        if(!table[posicion].isEmpty()){
-            exit = table[posicion].pop().data;
+        while(true) {
+            if(table[posicion] instanceof Equipo){
+                Equipo temp= (Equipo) table[posicion];
+                if (temp != null && temp.getName().equalsIgnoreCase((String) llave)) {
+                    table[posicion] = null;
+                    break;
+                }else{
+                    posicion++;
+                }
+            }else{
+                Partido temp= (Partido) table[posicion];
+                if (temp != null && temp.getLlave().equalsIgnoreCase((String)llave)) {
+                    table[posicion] = null;
+                    break;
+                }else{
+                    posicion++;
+                }
+            }
         }
-        return exit;
     }
 
     public int indexTabla(T llave){
-        return Math.abs(llave.hashCode() % table.length);
+        return Math.abs(llave.hashCode()) % table.length;
     }
 }

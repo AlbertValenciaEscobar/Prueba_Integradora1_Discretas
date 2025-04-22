@@ -3,7 +3,7 @@ package resources;
 import model.*;
 import java.util.ArrayList;
 
-public class Cola<B> {
+public class Cola<B> implements Interfase{
     private ArrayList<B> cola;
     private int size;
 
@@ -12,31 +12,10 @@ public class Cola<B> {
         cola.add(null);
         size = 0;
     }
-
-    public void insert(Equipo dato){
+    public void insert(B dato){
         B temp = (B) dato;
         cola.add(temp);
         size++;
-        cola = ordenarColaPorBurbuja();
-    }
-    public void insert(Partido dato){
-        B temp = (B) dato;
-        cola.add(temp);
-        size++;
-    }
-
-    public ArrayList<B> ordenarColaPorBurbuja() {
-        for(int i=0; i<cola.size(); i++){
-            for(int j = 0; j<cola.size()-i; j++){
-                Equipo temp = (Equipo) cola.get(j);
-                Equipo temp1 = (Equipo) cola.get(j + 1);
-                if(temp.compareTo(temp1) == -1){
-                    cola.set(j, (B) temp1);
-                    cola.set(j + 1, (B) temp);
-                }
-            }
-        }
-        return cola;
     }
 
     public boolean isEmpty(){

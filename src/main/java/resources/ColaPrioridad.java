@@ -3,7 +3,7 @@ package resources;
 import model.Equipo;
 import java.lang.reflect.Array;
 
-public class ColaPrioridad<B> {
+public class ColaPrioridad<B> implements Interfase {
     public B[] cola;
     public int size;
     private int positionLastData;

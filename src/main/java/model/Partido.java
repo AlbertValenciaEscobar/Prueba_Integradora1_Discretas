@@ -20,6 +20,7 @@ public class Partido {
     public int getGolesVisitante() {return golesVisitante;}
     public int getGolesLocal() {return golesLocal;}
     public String getFecha() {return fecha;}
+    public String getLlave(){return equipoLocal + " vs " + equipoVisitante.replaceAll("\\s", "");}
     //setters
     public void setEquipoLocal(String equipoLocal) {this.equipoLocal = equipoLocal;}
     public void setEquipoVisitante(String equipoVisitante) {this.equipoVisitante = equipoVisitante;}
