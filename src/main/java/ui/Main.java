@@ -7,6 +7,7 @@ public class Main {
     private static Controller objMain;
     private static boolean condition = true;
     private static Scanner sc = new Scanner(System.in);
+    private static int option = 0;
 
     public Main(){
         objMain = new Controller();
@@ -16,11 +17,33 @@ public class Main {
         new Main();
         cargarDatos();
         condition = true;
+        while(condition){
+            System.out.println("1. Jugar partido");
+            System.out.println("2. Retroceder una accion");
+            System.out.println("3. Mostrar clasificacion");
+            option = sc.nextInt();
+            sc.nextLine();
+            switch (option){
+                case 1:
+
+                    break;
+                case 2:
+                    String message = objMain.deshacerAccion();
+                    System.out.println(message);
+                    if(message.equalsIgnoreCase("Se ha desecho un equipo, porfavor inscribe todos los equipos faltantes para iniciar el torneo")){
+                        cargarDatos();
+                    }
+                    break;
+                case 3:
+
+                    break;
+            }
+        }
     }
 
     private static void cargarDatos(){
-        int option = 0;
         while(condition){
+            System.out.println(objMain.getNumTeams() + "/36 equipos inscripcion");
             System.out.println("1. Inscribir equipo");
             System.out.println("2. precargar datos");
             System.out.println("3. Retroceder una accion");
@@ -40,8 +63,10 @@ public class Main {
                     condition = false;
                     break;
                 case 3:
+                    System.out.println(objMain.deshacerAccion());
                     break;
             }
         }
+        System.out.println("Iniciando Torneo...");
     }
 }

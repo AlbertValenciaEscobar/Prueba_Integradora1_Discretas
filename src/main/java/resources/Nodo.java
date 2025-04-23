@@ -8,4 +8,5 @@ public class Nodo<B> {
         this.data = dato;
         this.next = null;
     }
+    public B getData() {return data;}
 }

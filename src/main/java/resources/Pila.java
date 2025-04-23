@@ -1,19 +1,16 @@
 package resources;
 
-public class Pila<B> implements Interfase{
+public class Pila<B>{
     Nodo<B> top;
-    private int tamaño;
 
     public Pila(){
         top = null;
-        this.tamaño = 0;
     }
 
     public void insert(B dato){
         Nodo<B> newNode = new Nodo<>(dato);
         newNode.next = top;
         top = newNode;
-        tamaño++;
     }
 
     public Nodo<B> pop(){

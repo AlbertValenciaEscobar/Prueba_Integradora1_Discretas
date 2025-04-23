@@ -3,18 +3,16 @@ package resources;
 import model.*;
 import java.util.ArrayList;
 
-public class Cola<B> implements Interfase{
-    private ArrayList<B> cola;
+public class Cola<B>{
+    private B [] cola;
     private int size;
 
     public Cola() {
-        cola = new ArrayList<B>();
-        cola.add(null);
+        cola = (B[]) new Object[288];
         size = 0;
     }
     public void insert(B dato){
-        B temp = (B) dato;
-        cola.add(temp);
+        cola[size] = dato;
         size++;
     }
 
@@ -26,18 +24,41 @@ public class Cola<B> implements Interfase{
     }
 
     public B fisrt(){
-        if (cola.isEmpty()) {
+        if (isEmpty()) {
             throw new RuntimeException("La cola está vacía.");
         }
-        return cola.get(1);
+        return cola[0];
     }
 
     public B outFirst(){
-        if (cola.isEmpty()) {
+        if (isEmpty()) {
             throw new RuntimeException("La cola está vacía.");
         }
-        B exit = cola.get(1);
-        cola.remove(1);
+        B exit = cola[0];
+        cola[0] = null;
+        organizar();
         return exit;
+    }
+
+    public void organizar(){
+        for(int i = 0; i<size; i++){
+            if(i < cola.length-1 && cola[i+1] != null){
+                cola[i] = cola[i+1];
+            }else{
+                cola[i] = null;
+                break;
+            }
+        }
+        size--;
+    }
+
+    public void retroceder(B dato){
+        for(int i = size-1; i>=0; i--){
+            if(i < cola.length-1){
+                cola[i+1] = cola[i];
+            }
+        }
+        cola[0] = dato;
+        size++;
     }
 }

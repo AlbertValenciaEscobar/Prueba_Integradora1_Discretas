@@ -6,6 +6,7 @@ public class Equipo implements Comparable<Equipo>{
     private int cantidadTitulos;
     private double coeficienteUEFA;
     private int puntuacion;
+    public static int numTeams = 0;
 
     public Equipo(String name, String pais, int cantidadTitulos, double coeficienteUEFA) {
         this.nombre = name;
@@ -13,6 +14,7 @@ public class Equipo implements Comparable<Equipo>{
         this.cantidadTitulos = cantidadTitulos;
         this.coeficienteUEFA = coeficienteUEFA;
         this.puntuacion = 0;
+        numTeams++;
     }
     //getters
     public String getName() {return this.nombre;}
@@ -25,13 +27,13 @@ public class Equipo implements Comparable<Equipo>{
     public void setPais(String pais) {this.pais = pais;}
     public void setCantidadTitulos(int cantidadTitulos){this.cantidadTitulos = cantidadTitulos;}
     public void setCoeficienteUEFA(int coeficienteUEFA){this.coeficienteUEFA = coeficienteUEFA;}
-    public void setPuntuacion(int puntuacion){this.puntuacion = puntuacion;}
+    public void setPuntuacion(int puntuacion){this.puntuacion = this.puntuacion + puntuacion;}
 
     public int compareTo(Equipo o) {
         int exit = 0;
-        if(coeficienteUEFA > o.getCoeficienteUEFA()){
+        if(puntuacion > o.getPuntuacion()){
             exit = 1;
-        }else if(coeficienteUEFA < o.getCoeficienteUEFA()){
+        }else if(puntuacion < o.getPuntuacion()){
             exit = -1;
         }
         return exit;

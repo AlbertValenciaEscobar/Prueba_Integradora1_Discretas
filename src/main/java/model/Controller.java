@@ -1,26 +1,20 @@
 package model;
 
-import resources.Cola;
-import resources.ColaPrioridad;
-import resources.TablaHash;
-import java.util.ArrayList;
+import resources.*;
 
 public class Controller {
-    private ColaPrioridad<Equipo> colaEquipos;
+    private ColaPrioridad colaEquipos;
     private Cola<Partido> colaPartidos;
     private TablaHash<String, Object> tabla;
-    private String lastAction;
-    private String action;
+    private Pila<Object> actions;
     private String[][] equipos;
     private String [][] clasificacion;
-    private int numTeams = 0;
 
     public Controller() {
-        this.colaEquipos = new ColaPrioridad<>(Equipo.class);
+        this.colaEquipos = new ColaPrioridad();
         this.colaPartidos = new Cola<>();
         this.tabla = new TablaHash<>();
-        lastAction  = "";
-        action = "";
+        this.actions = new Pila<>();
         equipos = new ChampionsLeagueEquipos().getEquiposData();
         clasificacion = new String[37][5];
         clasificacion[0][0]="Equipo";clasificacion[0][1]="Pais";
@@ -31,58 +25,79 @@ public class Controller {
         Equipo equipo = new Equipo(name, pais, cantidadTitulos, coeficienteUEFA);
         tabla.insert(name.replaceAll("\\s", ""), equipo);
         colaEquipos.insert(equipo);
-        guardarReferencia();
-        action  = name.replaceAll("\\s", "");
+        actions.insert(equipo);
     }
 
     public void addPartido(String equipoLocal, String equipoVisitante, int golesVisitante, int golesLocal, String fecha) {
         Partido partido = new Partido(equipoLocal, equipoVisitante, golesVisitante, golesLocal, fecha);
         tabla.insert(equipoLocal + " vs " + equipoVisitante.replaceAll("\\s", ""), partido);
         colaPartidos.insert(partido);
-        guardarReferencia();
-        action  = equipoLocal + " vs " + equipoVisitante.replaceAll("\\s", "");
+    }
+
+    public void ejecutarPartido(int local, int visitor) {
+        Partido temp = (Partido) colaPartidos.outFirst();
+        Equipo teamLocal = (Equipo) tabla.search(temp.getEquipoLocal());
+        Equipo teamVisitor = (Equipo) tabla.search(temp.getEquipoVisitante());
+        if(local > visitor){
+            teamLocal.setPuntuacion(2);
+            temp.setResult("local");
+        } else if(local < visitor){
+            teamVisitor.setPuntuacion(2);
+            temp.setResult("visitor");
+        }else{
+            teamVisitor.setPuntuacion(1);
+            teamLocal.setPuntuacion(1);
+            temp.setResult("draw");
+        }
+        actions.insert(temp);
+        colaEquipos.ordenarColaPorBurbuja();
     }
 
     public String actualizarClasificacion(){
-        colaEquipos.cola = colaEquipos.getCola();
-        String exit = mostrarClasificacion();
-        tabla.insert();
-        guardarReferencia();
-        action  = ;
+        String exit = "";
         return exit;
     }
 
     public String mostrarClasificacion(){
         String exit = "";
-        int count = 1;
-        for(int i=1; i<colaEquipos.size; i++){
-            exit = exit + count + ") " +colaEquipos.cola[i].getNombre() + "\n";
-            count++;
-        }
         return exit;
     }
 
-    public String desacerAccion(String llave){
-        String exit = "No hay acciones registradas";
-        B dato = (B) tabla.borrarUltimaAccion(llave);
-        if(dato != null){
-            if(dato instanceof Equipo){
-                Equipo equipo = (Equipo) dato;
-                colaEquipos.cola.remove(equipo);
-            }else if (dato instanceof Partido){
-                Partido partido = (Partido) dato;
-                colaPartidos.cola.remove(partido);
-            }else if (dato instanceof String){
-
+    public String deshacerAccion(){
+        String exit = "No se puede deshacer";
+        if(!actions.isEmpty()) {
+            exit = "Se ha deshacido una accion";
+            Object lastAction = actions.pop().getData();
+            if (lastAction instanceof Equipo) {
+                Equipo temp = (Equipo) lastAction;
+                String llave = temp.getName();
+                tabla.borrarUltimaAccion(llave, "equipo");
+                colaEquipos.delete(llave);
+                Equipo.numTeams--;
+                exit = "Se ha desecho un equipo, porfavor inscribe todos los equipos faltantes para iniciar el torneo";
+            } else {
+                Partido temp = (Partido) lastAction;
+                String llave = temp.getLlave();
+                tabla.borrarUltimaAccion(llave, "partido");
+                Equipo teamLocal = (Equipo) tabla.search(temp.getEquipoLocal());
+                Equipo teamVisitor = (Equipo) tabla.search(temp.getEquipoVisitante());
+                if(temp.getResult().equals("local")){
+                    teamLocal.setPuntuacion(-2);
+                } else if(temp.getResult().equals("visitor")){
+                    teamVisitor.setPuntuacion(-2);
+                }else{
+                    teamVisitor.setPuntuacion(-1);
+                    teamLocal.setPuntuacion(-1);
+                }
+                colaPartidos.retroceder(temp);
             }
-            exit = "se a borrado";
         }
         return exit;
     }
-
-    public void guardarReferencia(){lastAction = action;}
 
     // Logica del codigo
+
+    public int getNumTeams(){return Equipo.numTeams;}
 
     public String registrarEquipo(String nameTeam){
         String exit = "No se pudo registrar";
@@ -90,8 +105,7 @@ public class Controller {
             if(equipos[i][0].equals(nameTeam)){
                 addEquipo(nameTeam, equipos[i][1], Integer.parseInt(equipos[i][2]),
                         Double.parseDouble(equipos[i][3]));
-                numTeams++;
-                if(numTeams == 37){
+                if(Equipo.numTeams == 36){
                     exit = "Ya todos los equipos posibles fueron registrados";
                 }else {
                     equipos[i][0] = "";
@@ -105,10 +119,9 @@ public class Controller {
 
     public void precargar(){
         for(int i = 1; i<equipos.length; i++){
-            if(!equipos[i][0].equalsIgnoreCase("") && numTeams<37){
+            if(!equipos[i][0].equalsIgnoreCase("") && Equipo.numTeams<36){
                 addEquipo(equipos[i][0], equipos[i][1], Integer.parseInt(equipos[i][2]),
                         Double.parseDouble(equipos[i][3]));
-                numTeams++;
             }
         }
     }
