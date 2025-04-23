@@ -6,6 +6,7 @@ public class Partido {
     private int golesVisitante;
     private int golesLocal;
     private String fecha;
+    private String result;
 
     public Partido(String equipoLocal, String equipoVisitante, int golesVisitante, int golesLocal, String fecha) {
         this.equipoLocal = equipoLocal;
@@ -13,6 +14,7 @@ public class Partido {
         this.golesVisitante = golesVisitante;
         this.golesLocal = golesLocal;
         this.fecha = fecha;
+        this.result = "";
     }
     //getters
     public String getEquipoLocal() {return equipoLocal;}
@@ -21,12 +23,14 @@ public class Partido {
     public int getGolesLocal() {return golesLocal;}
     public String getFecha() {return fecha;}
     public String getLlave(){return equipoLocal + " vs " + equipoVisitante.replaceAll("\\s", "");}
+    public String getResult() {return result;}
     //setters
     public void setEquipoLocal(String equipoLocal) {this.equipoLocal = equipoLocal;}
     public void setEquipoVisitante(String equipoVisitante) {this.equipoVisitante = equipoVisitante;}
     public void setGolesVisitante(int golesVisitante) {this.golesVisitante = golesVisitante;}
     public void setGolesLocal(int golesLocal) {this.golesLocal = golesLocal;}
     public void setFecha(String fecha) {this.fecha = fecha;}
+    public void setResult(String result) {this.result = result;}
 
     @Override
     public String toString() {

@@ -1,25 +1,21 @@
 package resources;
 
 import model.Equipo;
-import java.lang.reflect.Array;
 
-public class ColaPrioridad<B> implements Interfase {
-    public B[] cola;
+public class ColaPrioridad{
+    public Equipo[] cola;
     public int size;
-    private int positionLastData;
 
-    public ColaPrioridad(Class<B> tipo) {
-        cola = (B[]) Array.newInstance(tipo, 36);
+    public ColaPrioridad() {
+        cola = new Equipo[37];
         size = 0;
-        positionLastData = 0;
     }
 
 
-    public void insert(B dato){
+    public void insert(Equipo dato){
         for(int i = 1; i < size; i++){
             if(cola[i] == null){
                 cola[i] = dato;
-                positionLastData = i;
                 break;
             }
         }
@@ -29,25 +25,29 @@ public class ColaPrioridad<B> implements Interfase {
 
     public void ordenarColaPorBurbuja() {
         for(int i=0; i<size; i++){
-            for(int j = 1; j<size-i; j++){
-                Equipo temp = (Equipo) cola[j];
-                Equipo temp1 = (Equipo) cola[j + 1];
-                if(cola[j + 1] != null && temp.compareTo(temp1) == -1){
-                    cola[j] = (B) temp1;
-                    cola[j + 1] = (B) temp;
+            for(int j = 1; j<size-i-1; j++){
+                Equipo temp = cola[j];
+                Equipo temp1 = cola[j + 1];
+                if(temp1 != null && temp.compareTo(temp1) == -1){
+                    cola[j] = temp1;
+                    cola[j + 1] = temp;
+                }else if(temp1 != null && temp.compareTo(temp1) == 0){
+                    if(temp.getCoeficienteUEFA() < temp1.getCoeficienteUEFA()) {
+                        cola[j] = temp1;
+                        cola[j + 1] = temp;
+                    }
                 }
             }
         }
     }
 
     public void ordenar(int position){
-        if(cola[position] == null){
-            for(int i = position; i < size; i++){
-                if(cola[i+1] != null){
-                    cola[i] = cola[i+1];
-                }
+        for(int i = position; i < size; i++){
+            if(cola[i+1] != null){
+                cola[i] = cola[i+1];
             }
         }
+        size--;
     }
 
     public boolean isEmpty(){
@@ -57,27 +57,16 @@ public class ColaPrioridad<B> implements Interfase {
         return false;
     }
 
-    public B[] getCola() {return cola;}
+    public Equipo[] getCola() {return cola;}
 
     public void delete(String name){
         for(int i = 1; i < size; i++){
-            Equipo temp = (Equipo) cola[i];
-            if(temp.getNombre().equals(name)){
+            Equipo temp = cola[i];
+            if(temp.getName().equals(name)){
                 cola[i] = null;
-                size--;
-                if(i == positionLastData){
-                    positionLastData = 0;
-                }
                 ordenar(i);
                 break;
             }
         }
-    }
-
-    public void deleteLastData(){
-        cola[positionLastData] = null;
-        size--;
-        ordenar(positionLastData);
-        positionLastData = 0;
     }
 }
