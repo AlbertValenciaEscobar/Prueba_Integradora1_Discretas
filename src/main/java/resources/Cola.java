@@ -1,8 +1,5 @@
 package resources;
 
-import model.*;
-import java.util.ArrayList;
-
 public class Cola<B>{
     private B [] cola;
     private int size;

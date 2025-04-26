@@ -7,7 +7,7 @@ public class ColaPrioridad{
     public int size;
 
     public ColaPrioridad() {
-        cola = new Equipo[37];
+        cola = new Equipo[36];
         size = 0;
     }
 
@@ -69,4 +69,8 @@ public class ColaPrioridad{
             }
         }
     }
+    public int size() {
+        return size;
+    }
+
 }
